@@ -1,12 +1,14 @@
 package routes
 
 import (
-	"github.com/gin-gonic/gin"
 	"api-go-gin/controllers"
+
+	"github.com/gin-gonic/gin"
 )
 
 func HandleRequest() {
 	r := gin.Default()
+	r.LoadHTMLGlob("templates/*")
 	r.GET("/:nome", controllers.Saudacoes)
 	r.GET("/alunos", controllers.TodosAlunos)
 	r.GET("/alunos/:id", controllers.BuscarAlunoPorID)
@@ -15,5 +17,6 @@ func HandleRequest() {
 	r.PATCH("/alunos/:id", controllers.EditarAluno)
 	r.GET("/alunos/cpf/:cpf", controllers.BuscaAlunoPorCPF)
 	r.GET("/alunos/", controllers.BuscaAlunoPorCPF)
+	r.GET("/index", controllers.ExibePaginaIndex)
 	r.Run()
 }
