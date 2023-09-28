@@ -7,7 +7,7 @@ services:
       - POSTGRES_PASSWORD=root
       - POSTGRES_DB=root      
     ports:
-      - "5432:5432"
+      - "5000:5000"
     volumes:
       - /postgres-data:/var/lib/postgresql/data  
 
@@ -17,7 +17,7 @@ services:
       PGADMIN_DEFAULT_EMAIL: "robertta.longoni@gmail.com"
       PGADMIN_DEFAULT_PASSWORD: "123456"
     ports:
-      - "54321:80"
+      - "50001:80"
     depends_on:
       - postgres
 
