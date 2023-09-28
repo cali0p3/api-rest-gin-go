@@ -1,6 +1,7 @@
 package main
 
 import (
+	"bytes"
 	"encoding/json"
 	"fmt"
 	"io/ioutil"
@@ -49,7 +50,7 @@ func TestVerificaStatusCodeDaSaudacaoComParametro(t *testing.T) {
 	fmt.Println("teste")
 }
 
-func TestListandoTodosAlunosHandler(t *testing.T) {
+func TestListaTodosAlunosHandler(t *testing.T) {
 	database.ConectaComBancoDeDados()
 	CriaAlunoMock()
 	defer DeletaAlunoMock()
@@ -102,4 +103,24 @@ func TestDeletaAlunoHandler(t *testing.T) {
 	r.ServeHTTP(resposta, req)
 	assert.Equal(t, http.StatusOK, resposta.Code)
 
+}
+
+func TestEditaAlunoHandler(t *testing.T){
+	database.ConectaComBancoDeDados()
+	CriaAlunoMock()
+	defer DeletaAlunoMock()
+	r := SetupDasRotasDeTeste()
+	r.PATCH("/alunos/:id", controllers.EditarAluno)
+	aluno := models.Aluno{Nome: "Aluno Teste", CPF: "40345678901", RG: "003456789"}
+	valorJson, _ := json.Marshal(aluno)
+	pathParaEditar := "/alunos/" + strconv.Itoa(ID)
+	req, _ := http.NewRequest("PATCH", pathParaEditar, bytes.NewBuffer(valorJson))
+	resposta := httptest.NewRecorder()
+	r.ServeHTTP(resposta, req)
+	var alunoMockAtualizado models.Aluno
+	json.Unmarshal(resposta.Body.Bytes(), &alunoMockAtualizado)
+	assert.Equal(t, "40345678901", alunoMockAtualizado.CPF)
+	assert.Equal(t, "003456789", alunoMockAtualizado.RG)
+	assert.Equal(t, "Aluno Teste", alunoMockAtualizado.Nome)
+	fmt.Println(alunoMockAtualizado.CPF)
 }
